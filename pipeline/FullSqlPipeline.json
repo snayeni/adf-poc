@@ -1,6 +1,354 @@
 {
 	"name": "FullSqlPipeline",
 	"properties": {
+		"activities": [
+			{
+				"name": "IfValidationJobNotNull",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "IfManagedInstanceisTrue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('WriteTaskStarted').output.firstRow.ValidationJob, null))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "RawFormattedToStagingValidatedPipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "RawFormattedToStagingValidatedPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"SourceHistoryId": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
+										"type": "Expression"
+									},
+									"ValidationJob": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.ValidationJob",
+										"type": "Expression"
+									},
+									"FolderName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
+										"type": "Expression"
+									},
+									"PartitionName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "WriteTaskEnded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "IfTransformationJobNotNull",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Status].[WriteEnded]",
+					"storedProcedureParameters": {
+						"SourceHistoryId": {
+							"value": {
+								"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
+								"type": "Expression"
+							},
+							"type": "Int64"
+						},
+						"PipelineRun": {
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "DateTimeOffset"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ETLManagementLinkedService",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "IfTransformationJobNotNull",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "IfValidationJobNotNull",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('WriteTaskStarted').output.firstRow.TransformationJob, null))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "StagingValidatedToStagingTransformedPipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "StagingValidatedToStagingTransformedPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"SourceHistoryId": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
+										"type": "Expression"
+									},
+									"TransformationJob": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.TransformationJob",
+										"type": "Expression"
+									},
+									"FolderName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
+										"type": "Expression"
+									},
+									"PartitionName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "WriteTaskStarted",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[Status].[WriteFullSqlStarted]",
+						"storedProcedureParameters": {
+							"PipelineId": {
+								"type": "Guid",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							},
+							"PipelineRun": {
+								"type": "DateTimeOffset",
+								"value": {
+									"value": "@utcnow()",
+									"type": "Expression"
+								}
+							},
+							"FullSqlSourceId": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ETLManagementDataset",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "IfManagedInstanceisTrue",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "WriteTaskStarted",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('WriteTaskStarted').output.firstRow.ManagedInstance, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "FullSqlToRawFormattedPipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FullSqlToRawFormattedPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"SourceHistoryId": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
+										"type": "Expression"
+									},
+									"ServerName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.ServerName",
+										"type": "Expression"
+									},
+									"DatabaseName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.DatabaseName",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.TableName",
+										"type": "Expression"
+									},
+									"Username": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.Username",
+										"type": "Expression"
+									},
+									"PasswordInKeyVault": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PasswordInKeyVault",
+										"type": "Expression"
+									},
+									"MinRows": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.MinRows",
+										"type": "Expression"
+									},
+									"MaxRows": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.MaxRows",
+										"type": "Expression"
+									},
+									"FolderName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
+										"type": "Expression"
+									},
+									"PartitionName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "FullSqlToRawFormattedPipeline Cloud MI",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitOnCompletion": true,
+								"parameters": {
+									"SourceHistoryId": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
+										"type": "Expression"
+									},
+									"ServerName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.Servername",
+										"type": "Expression"
+									},
+									"DatabaseName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.DatabaseName",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.TableName",
+										"type": "Expression"
+									},
+									"Username": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.UserName",
+										"type": "Expression"
+									},
+									"PasswordInKeyVault": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PasswordInKeyVault",
+										"type": "Expression"
+									},
+									"MinRows": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.MinRows",
+										"type": "Expression"
+									},
+									"MaxRows": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.MaxRows",
+										"type": "Expression"
+									},
+									"FolderName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
+										"type": "Expression"
+									},
+									"PartitionName": {
+										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Id": {
+				"type": "int"
+			}
+		},
 		"annotations": []
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
