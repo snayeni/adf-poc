@@ -3,15 +3,307 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Wait1",
-				"type": "Wait",
+				"name": "CopyToRawFormattedCurrent",
+				"type": "Copy",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"waitTimeInSeconds": 1
+					"source": {
+						"type": "SqlServerSource",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				}
+			},
+			{
+				"name": "IfRowsCopiedInsideRowCountExtremes",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "CopyToRawFormattedCurrent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(\n\tor(\n\t\tequals(pipeline().parameters.MinRows, null),\n\t\tgreaterOrEquals(activity('CopyToRawFormattedCurrent').output.rowsCopied, pipeline().parameters.MinRows)\n\t),\n\tor(\n\t\tequals(pipeline().parameters.MaxRows, null),\n\t\tlessOrEquals(activity('CopyToRawFormattedCurrent').output.rowsCopied, pipeline().parameters.MaxRows)\n\t)\n)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "WriteTaskEnded-RowCountFailure",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DeleteRawFormattedCurrent",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Status].[WriteFullSqlToRawFormatted]",
+								"storedProcedureParameters": {
+									"SourceHistoryId": {
+										"value": {
+											"value": "@pipeline().parameters.SourceHistoryId",
+											"type": "Expression"
+										},
+										"type": "Int64"
+									},
+									"InRawFormatted": {
+										"value": null,
+										"type": "DateTimeOffset"
+									},
+									"InRawRejected": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTimeOffset"
+									},
+									"RowsCopied": {
+										"value": {
+											"value": "@activity('CopyToRawFormattedCurrent').output.rowsCopied",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "ETLManagementLinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DeleteRawFormattedCurrent",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "CopyToRawRejectedPartition",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"enableLogging": false
+							}
+						},
+						{
+							"name": "CopyToRawRejectedPartition",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureBlobFSSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "AzureBlobFSSink"
+								},
+								"enableStaging": false
+							}
+						},
+						{
+							"name": "ThrowException-RowCountFailure",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "WriteTaskEnded-RowCountFailure",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "sp_executesql",
+								"storedProcedureParameters": {
+									"statement": {
+										"value": {
+											"value": "THROW 51000, '@{activity('CopyToRawFormattedCurrent').output.rowsCopied} rows is outside @{if(equals(pipeline().parameters.MinRows, null), 'null', pipeline().parameters.MinRows)} and @{if(equals(pipeline().parameters.MaxRows, null), 'null', pipeline().parameters.MaxRows)} bounds.', 1;",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "ETLManagementLinkedService",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "WriteTaskEnded",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "CopyToRawFormattedPartition",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Status].[WriteFullSqlToRawFormatted]",
+								"storedProcedureParameters": {
+									"SourceHistoryId": {
+										"value": {
+											"value": "@pipeline().parameters.SourceHistoryId",
+											"type": "Expression"
+										},
+										"type": "Int64"
+									},
+									"InRawFormatted": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTimeOffset"
+									},
+									"InRawRejected": {
+										"value": null,
+										"type": "DateTimeOffset"
+									},
+									"RowsCopied": {
+										"value": {
+											"value": "@activity('CopyToRawFormattedCurrent').output.rowsCopied",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "ETLManagementLinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CopyToRawFormattedPartition",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureBlobFSSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "AzureBlobFSSink"
+								},
+								"enableStaging": false
+							}
+						}
+					]
 				}
 			}
 		],
+		"parameters": {
+			"SourceHistoryId": {
+				"type": "int"
+			},
+			"ServerName": {
+				"type": "string"
+			},
+			"DatabaseName": {
+				"type": "string"
+			},
+			"TableName": {
+				"type": "string"
+			},
+			"Username": {
+				"type": "string"
+			},
+			"PasswordInKeyVault": {
+				"type": "string"
+			},
+			"MinRows": {
+				"type": "int"
+			},
+			"MaxRows": {
+				"type": "int"
+			},
+			"FolderName": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			},
+			"PartitionName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Stages"
+		},
 		"annotations": []
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
