@@ -1,0 +1,16 @@
+{
+	"name": "ETLManagementDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ETLManagementLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Control",
+			"table": "FullSqlSources"
+		}
+	}
+}
