@@ -87,7 +87,11 @@
 				"inputs": [
 					{
 						"referenceName": "ETLManagementDataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "a",
+							"schema": "b"
+						}
 					}
 				],
 				"outputs": [
