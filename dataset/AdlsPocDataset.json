@@ -1,0 +1,21 @@
+{
+	"name": "AdlsPocDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdlsPocLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ContactDetails",
+				"folderPath": "ngpoc",
+				"container": "nhgadls"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
