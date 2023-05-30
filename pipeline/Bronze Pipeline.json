@@ -23,7 +23,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select TableName from [Control].FullSqlSources",
+							"value": "select TableName,FullSqlSourceId from [Control].FullSqlSources",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
