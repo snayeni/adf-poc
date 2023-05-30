@@ -29,7 +29,7 @@
 			}
 		],
 		"parameters": {
-			"Srcid": {
+			"SourceId": {
 				"type": "int",
 				"defaultValue": 1
 			}
