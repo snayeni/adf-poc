@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select * from [Control].FullSqlSources where FullSqlSourceId=",
+						"sqlReaderQuery": "select * from [Control].FullSqlSources where FullSqlSourceId=@srcid",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -29,7 +29,7 @@
 			}
 		],
 		"parameters": {
-			"srcid": {
+			"Srcid": {
 				"type": "int",
 				"defaultValue": 1
 			}
