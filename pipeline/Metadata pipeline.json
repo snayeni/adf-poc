@@ -30,7 +30,7 @@
 						"referenceName": "ETLManagementDataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"tablename": "a"
+							"tablename": "schema.table"
 						}
 					}
 				}
