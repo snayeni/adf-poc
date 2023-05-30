@@ -1,5 +1,5 @@
 {
-	"name": "Metadata pipeline",
+	"name": "Bronze Load",
 	"properties": {
 		"activities": [
 			{
