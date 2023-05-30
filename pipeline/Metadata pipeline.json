@@ -22,7 +22,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select TableName from [Control].FullSqlSources where FullSqlSourceId=1",
+						"sqlReaderQuery": {
+							"value": "select TableName from [Control].FullSqlSources where FullSqlSourceId=@{pipeline().parameters.SourceId}",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
