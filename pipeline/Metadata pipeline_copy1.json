@@ -1,5 +1,5 @@
 {
-	"name": "Metadata pipeline",
+	"name": "Metadata pipeline_copy1",
 	"properties": {
 		"activities": [
 			{
@@ -58,10 +58,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "select * from [FSC].[CONTACT_DETAILS]\n",
-							"type": "Expression"
-						},
+						"sqlReaderQuery": "select * from @{activity('Read Table list').output.firstRow.TableName}",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
