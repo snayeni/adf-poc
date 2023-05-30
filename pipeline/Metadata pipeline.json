@@ -13,7 +13,12 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "SourceId",
+						"value": "1"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
@@ -23,7 +28,10 @@
 					},
 					"dataset": {
 						"referenceName": "ETLManagementDataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "a"
+						}
 					}
 				}
 			},
