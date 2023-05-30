@@ -22,7 +22,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select TableName from [Control].FullSqlSources where FullSqlSourceId=@SourceId",
+						"sqlReaderQuery": "select TableName from [Control].FullSqlSources where FullSqlSourceId=1",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -30,7 +30,8 @@
 						"referenceName": "ETLManagementDataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"tablename": "schema.table"
+							"tablename": "a",
+							"schema": "b"
 						}
 					}
 				}
