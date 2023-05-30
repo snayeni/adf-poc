@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select * from [Control].FullSqlSources where FullSqlSourceId=@SourceId",
+						"sqlReaderQuery": "select TableName from [Control].FullSqlSources where FullSqlSourceId=@SourceId",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -50,7 +50,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@select * from activity('Read Table list').output",
+							"value": "select * from @{activity('Read Table list').output.firstRow.TableName}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
