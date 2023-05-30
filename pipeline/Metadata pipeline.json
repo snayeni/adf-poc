@@ -59,7 +59,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from [FSC].[CONTACT_DETAILS]\n",
+							"value": "select * from @{activity('Read Table list').output.firstRow.TableName}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
