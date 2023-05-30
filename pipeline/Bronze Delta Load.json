@@ -40,7 +40,7 @@
 				}
 			},
 			{
-				"name": "sqlload",
+				"name": "DeltaSqlLoad",
 				"type": "Copy",
 				"dependsOn": [
 					{
