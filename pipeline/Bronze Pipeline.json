@@ -60,13 +60,13 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Execute Source Load",
+							"name": "Execute Source Full Load",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "Bronze Load",
+									"referenceName": "Bronze Full Load",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
