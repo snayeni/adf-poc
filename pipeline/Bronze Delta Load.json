@@ -103,6 +103,80 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Old Watermark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "SourceId",
+						"value": "1"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select TableName,WatermarkField from [Control].DeltaSqlSources where DeltaSqlSourceId=@{pipeline().parameters.SourceId}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ETLManagementDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "a",
+							"schema": "b"
+						}
+					}
+				}
+			},
+			{
+				"name": "New watermark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "SourceId",
+						"value": "1"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select TableName,WatermarkField from [Control].DeltaSqlSources where DeltaSqlSourceId=@{pipeline().parameters.SourceId}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ETLManagementDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "a",
+							"schema": "b"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
