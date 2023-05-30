@@ -172,30 +172,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[Status].[WriteFullSqlStarted]",
-						"storedProcedureParameters": {
-							"PipelineId": {
-								"type": "Guid",
-								"value": {
-									"value": "@pipeline().RunId",
-									"type": "Expression"
-								}
-							},
-							"PipelineRun": {
-								"type": "DateTimeOffset",
-								"value": {
-									"value": "@utcnow()",
-									"type": "Expression"
-								}
-							},
-							"FullSqlSourceId": {
-								"type": "Int32",
-								"value": {
-									"value": "@pipeline().parameters.Id",
-									"type": "Expression"
-								}
-							}
-						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -290,53 +266,7 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"waitOnCompletion": true,
-								"parameters": {
-									"SourceHistoryId": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
-										"type": "Expression"
-									},
-									"ServerName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.Servername",
-										"type": "Expression"
-									},
-									"DatabaseName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.DatabaseName",
-										"type": "Expression"
-									},
-									"TableName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.TableName",
-										"type": "Expression"
-									},
-									"Username": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.UserName",
-										"type": "Expression"
-									},
-									"PasswordInKeyVault": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.PasswordInKeyVault",
-										"type": "Expression"
-									},
-									"MinRows": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.MinRows",
-										"type": "Expression"
-									},
-									"MaxRows": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.MaxRows",
-										"type": "Expression"
-									},
-									"FolderName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
-										"type": "Expression"
-									},
-									"FileName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
-										"type": "Expression"
-									},
-									"PartitionName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
-										"type": "Expression"
-									}
-								}
+								"waitOnCompletion": true
 							}
 						}
 					]
