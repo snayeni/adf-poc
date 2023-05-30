@@ -23,7 +23,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select TableName from [Control].FullSqlSources where FullSqlSourceId=@{pipeline().parameters.SourceId}",
+							"value": "select TableName,WatermarkField from [Control].DeltaSqlSources where DeltaSqlSourceId=@{pipeline().parameters.SourceId}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
