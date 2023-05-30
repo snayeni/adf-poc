@@ -28,6 +28,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"srcid": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
 		"annotations": []
 	}
 }
