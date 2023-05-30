@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select * from [Control].FullSqlSources where FullSqlSourceId=@Srcid",
+						"sqlReaderQuery": "select * from [Control].FullSqlSources where FullSqlSourceId=@SourceId",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -26,6 +26,40 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Read Table list",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ETLManagementDataset",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
