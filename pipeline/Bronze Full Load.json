@@ -100,7 +100,13 @@
 				"outputs": [
 					{
 						"referenceName": "AdlsPocDataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@activity('Read Table list').output.firstRow.TableName",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
