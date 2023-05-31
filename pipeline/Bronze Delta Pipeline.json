@@ -60,22 +60,16 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Execute Source Full Load",
+							"name": "Execute Delta Load",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "Bronze Full Load",
+									"referenceName": "Bronze Delta Load",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"SourceId": {
-										"value": "@item().FullSqlSourceId",
-										"type": "Expression"
-									}
-								}
+								"waitOnCompletion": true
 							}
 						}
 					]
