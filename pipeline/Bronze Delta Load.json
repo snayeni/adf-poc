@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read table details",
+				"name": "Lookup Old watermark",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -115,7 +115,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Read table details",
+						"activity": "Lookup Old watermark",
 						"dependencyConditions": [
 							"Completed"
 						]
