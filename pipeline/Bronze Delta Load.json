@@ -62,7 +62,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{activity('Read table details').output.firstRow.TableName}\nWHERE @{activity('Read table details').output.firstRow.WatermarkField} > '@{activity('Read table details').output.firstRow.DefaultWatermarkValue}'\nAND @{activity('Read table details').output.firstRow.WatermarkField} <= '@{activity('Lookup New WatermarkValue').output.firstRow.NewWatermarkValue}'",
+							"value": "select * from @{activity('Lookup Old watermark').output.firstRow.TableName}\nWHERE @{activity('Lookup Old watermark').output.firstRow.WatermarkField} > '@{activity('Lookup Old watermark').output.firstRow.DefaultWatermarkValue}'\nAND @{activity('Lookup Old watermark').output.firstRow.WatermarkField} <= '@{activity('Lookup New WatermarkValue').output.firstRow.NewWatermarkValue}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -138,7 +138,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select MAX(@{activity('Read table details').output.firstRow.WatermarkField}) as NewWatermarkValue from @{activity('Read table details').output.firstRow.TableName}",
+							"value": "select MAX(@{activity('Lookup Old watermark').output.firstRow.WatermarkField}) as NewWatermarkValue from @{activity('Lookup Old watermark').output.firstRow.TableName}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
