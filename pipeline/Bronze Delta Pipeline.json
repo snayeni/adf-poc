@@ -69,7 +69,13 @@
 									"referenceName": "Bronze Delta Load",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"SourceId": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
