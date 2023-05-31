@@ -67,7 +67,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"SourceId": {
-										"value": "@item()",
+										"value": "@item().DeltaSqlSourceId",
 										"type": "Expression"
 									}
 								}
