@@ -62,7 +62,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{activity('Read Table list').output.firstRow.TableName}\nWHERE @{activity('Read Table list').output.firstRow.WatermarkField} > '@{activity('Read Table list').output.firstRow.DefaultWatermarkValue}'\nAND @{@{activity('Read Table list').output.firstRow.WatermarkField} <= '@{activity('Lookup New WatermarkValue').output.firstRow.NewWatermarkValue}'",
+							"value": "select * from @{activity('Read table details').output.firstRow.TableName}\nWHERE @{activity('Read table details').output.firstRow.WatermarkField} > '@{activity('Read table details').output.firstRow.DefaultWatermarkValue}'\nAND @{activity('Read table details').output.firstRow.WatermarkField} <= '@{activity('Lookup New WatermarkValue').output.firstRow.NewWatermarkValue}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -100,7 +100,13 @@
 				"outputs": [
 					{
 						"referenceName": "AdlsPocDataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@activity('Read table details').output.firstRow.TableName",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
