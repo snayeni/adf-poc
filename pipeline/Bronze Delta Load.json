@@ -103,7 +103,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@activity('Read table details').output.firstRow.TableName",
+								"value": "@activity('Lookup Old watermark').output.firstRow.TableName",
 								"type": "Expression"
 							}
 						}
