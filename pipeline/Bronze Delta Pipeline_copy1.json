@@ -1,5 +1,5 @@
 {
-	"name": "Bronze Delta Pipeline",
+	"name": "Bronze Delta Pipeline_copy1",
 	"properties": {
 		"activities": [
 			{
@@ -38,7 +38,14 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Read Source Table list",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
@@ -72,26 +79,10 @@
 			{
 				"name": "If Condition1",
 				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Read Source Table list",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@activity('Read Source Table list').output.count",
-						"type": "Expression"
-					}
-				}
+				"dependsOn": [],
+				"userProperties": []
 			}
 		],
-		"folder": {
-			"name": "New folder"
-		},
 		"annotations": []
 	}
 }

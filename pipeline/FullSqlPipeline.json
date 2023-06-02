@@ -30,29 +30,7 @@
 									"referenceName": "RawFormattedToStagingValidatedPipeline",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"SourceHistoryId": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
-										"type": "Expression"
-									},
-									"ValidationJob": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.ValidationJob",
-										"type": "Expression"
-									},
-									"FolderName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
-										"type": "Expression"
-									},
-									"FileName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
-										"type": "Expression"
-									},
-									"PartitionName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
-										"type": "Expression"
-									}
-								}
+								"waitOnCompletion": true
 							}
 						}
 					]
@@ -129,29 +107,7 @@
 									"referenceName": "StagingValidatedToStagingTransformedPipeline",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"SourceHistoryId": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.SourceHistoryId",
-										"type": "Expression"
-									},
-									"TransformationJob": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.TransformationJob",
-										"type": "Expression"
-									},
-									"FolderName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FolderName",
-										"type": "Expression"
-									},
-									"FileName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.FileName",
-										"type": "Expression"
-									},
-									"PartitionName": {
-										"value": "@activity('WriteTaskStarted').output.firstRow.PartitionName",
-										"type": "Expression"
-									}
-								}
+								"waitOnCompletion": true
 							}
 						}
 					]
@@ -277,6 +233,9 @@
 			"Id": {
 				"type": "int"
 			}
+		},
+		"folder": {
+			"name": "New folder"
 		},
 		"annotations": []
 	},
