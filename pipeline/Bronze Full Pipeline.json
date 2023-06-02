@@ -5,7 +5,14 @@
 			{
 				"name": "Read Source Table list",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "WriteFullSqlSourcesStarted",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -82,7 +89,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "WriteFullSqlSourcesStarted",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -92,7 +99,14 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[status].[WriteSourceSystemStarted]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ETLManagementLinkedService",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
