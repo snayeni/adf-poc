@@ -128,7 +128,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[status].[WriteEnded]"
+					"storedProcedureName": "[status].[WriteSourceSystemEnded]"
 				},
 				"linkedServiceName": {
 					"referenceName": "ETLManagementLinkedService",
