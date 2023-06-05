@@ -189,9 +189,9 @@
 							},
 							"type": "Datetimeoffset"
 						},
-						"SourceId": {
+						"SourceHistoryId": {
 							"value": {
-								"value": "@pipeline().parameters.SourceId",
+								"value": "@activity('WriteFullSqlSourceStarted').output.firstRow.SourceHistoryId",
 								"type": "Expression"
 							},
 							"type": "Int64"
