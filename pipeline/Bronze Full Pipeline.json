@@ -122,7 +122,7 @@
 								"value": "@pipeline().RunId",
 								"type": "Expression"
 							},
-							"type": "Int64"
+							"type": "Guid"
 						}
 					}
 				},
@@ -165,7 +165,7 @@
 								"value": "@pipeline().parameters.SourceSystemID",
 								"type": "Expression"
 							},
-							"type": "Int64"
+							"type": "Int32"
 						}
 					}
 				},
