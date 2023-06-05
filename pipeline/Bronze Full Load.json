@@ -132,7 +132,7 @@
 				"typeProperties": {
 					"storedProcedureName": "[status].[WriteFullSqlStarted]",
 					"storedProcedureParameters": {
-						"FullSourceId": {
+						"FullSqlSourceId": {
 							"value": {
 								"value": "@pipeline().parameters.SourceId",
 								"type": "Expression"
