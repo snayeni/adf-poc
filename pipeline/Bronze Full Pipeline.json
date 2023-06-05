@@ -103,17 +103,26 @@
 				"typeProperties": {
 					"storedProcedureName": "[status].[WriteSourceSystemStarted]",
 					"storedProcedureParameters": {
-						"SourceHistoryId": {
+						"SourceSystemId": {
 							"value": {
 								"value": "@pipeline().parameters.SourceSystemID",
 								"type": "Expression"
-							}
+							},
+							"type": "Int64"
 						},
 						"PipelineRun": {
 							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"PipelineId": {
+							"value": {
 								"value": "@pipeline().RunId",
 								"type": "Expression"
-							}
+							},
+							"type": "Int64"
 						}
 					}
 				},
