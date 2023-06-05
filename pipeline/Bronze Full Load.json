@@ -3,16 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read Table list",
+				"name": "WrtiteFullSqlSourceStarted",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "WriteFullSqlSourceStarted",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -29,9 +22,29 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "select TableName from [Control].FullSqlSources where FullSqlSourceId=@{pipeline().parameters.SourceId}",
-							"type": "Expression"
+						"sqlReaderStoredProcedureName": "[status].[WriteFullSqlStarted]",
+						"storedProcedureParameters": {
+							"FullSqlSourceId": {
+								"type": "Int64",
+								"value": {
+									"value": "@pipeline().parameters.SourceId",
+									"type": "Expression"
+								}
+							},
+							"PipelineRun": {
+								"type": "Datetimeoffset",
+								"value": {
+									"value": "@utcnow",
+									"type": "Expression"
+								}
+							},
+							"PipelineId": {
+								"type": "Guid",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							}
 						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
@@ -51,7 +64,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read Table list",
+						"activity": "WrtiteFullSqlSourceStarted",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -69,7 +82,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{activity('Read Table list').output.firstRow.TableName}",
+							"value": "select * from @{activity(''WriteFullSqlSourceStarted').output.firstRow.TableName}\n\n",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -110,55 +123,12 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@activity('Read Table list').output.firstRow.TableName",
+								"value": "@activity('WriteFullSqlSourceStarted').output.firstRow.TableName",
 								"type": "Expression"
 							}
 						}
 					}
 				]
-			},
-			{
-				"name": "WriteFullSqlSourceStarted",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[status].[WriteFullSqlStarted]",
-					"storedProcedureParameters": {
-						"FullSqlSourceId": {
-							"value": {
-								"value": "@pipeline().parameters.SourceId",
-								"type": "Expression"
-							},
-							"type": "Int64"
-						},
-						"PipelineRun": {
-							"value": {
-								"value": "@utcnow()",
-								"type": "Expression"
-							},
-							"type": "Datetimeoffset"
-						},
-						"PipelineId": {
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							},
-							"type": "Guid"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ETLManagementLinkedService",
-					"type": "LinkedServiceReference"
-				}
 			},
 			{
 				"name": "WriteFullSqlSourceEnded",
@@ -191,7 +161,7 @@
 						},
 						"SourceHistoryId": {
 							"value": {
-								"value": "@activity('WriteFullSqlSourceStarted').output.firstRow.SourceHistoryId",
+								"value": "@activity('WriteFullSqlSourceStarted').output.SourceHistoryId",
 								"type": "Expression"
 							},
 							"type": "Int64"
