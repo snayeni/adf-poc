@@ -34,7 +34,7 @@
 							"PipelineRun": {
 								"type": "Datetimeoffset",
 								"value": {
-									"value": "@utcnow",
+									"value": "1",
 									"type": "Expression"
 								}
 							},
