@@ -34,7 +34,8 @@
 		],
 		"parameters": {
 			"SourceId": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"annotations": []
