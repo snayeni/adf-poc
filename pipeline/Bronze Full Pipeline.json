@@ -155,12 +155,17 @@
 					"storedProcedureParameters": {
 						"PipelineRun": {
 							"value": {
-								"value": "@pipeline().RunId",
+								"value": "@utcnow()",
 								"type": "Expression"
-							}
+							},
+							"type": "Datetimeoffset"
 						},
 						"SourceHistoryId": {
-							"value": ""
+							"value": {
+								"value": "@pipeline().parameters.SourceSystemID",
+								"type": "Expression"
+							},
+							"type": "Int64"
 						}
 					}
 				},
