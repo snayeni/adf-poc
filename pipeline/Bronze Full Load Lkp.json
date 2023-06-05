@@ -18,6 +18,23 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[status].[WriteFullSqlStarted]",
+						"storedProcedureParameters": {
+							"PipelineId": {
+								"type": "Guid",
+								"value": "@pipeline().RunId"
+							},
+							"PipelineRun": {
+								"type": "Datetimeoffset",
+								"value": null
+							},
+							"FullSqlSourceId": {
+								"type": "Int64",
+								"value": {
+									"value": "@pipeline().parameters.SourceId",
+									"type": "Expression"
+								}
+							}
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
