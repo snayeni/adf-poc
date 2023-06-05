@@ -79,7 +79,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{activity('Lookup Old watermark').output.firstRow.TableName}\nWHERE @{activity('Lookup Old watermark').output.firstRow.WatermarkField} > '@{activity('Lookup Old watermark').output.firstRow.DefaultWatermarkValue}'\nAND @{activity('Lookup Old watermark').output.firstRow.WatermarkField} <= '@{activity('Lookup New WatermarkValue').output.firstRow.NewWatermarkValue}'",
+							"value": "select * from @{activity('Lookup Old watermark').output.firstRow.TableName}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
