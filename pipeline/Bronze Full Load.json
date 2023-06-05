@@ -189,7 +189,7 @@
 							},
 							"type": "Datetimeoffset"
 						},
-						"SourceHistoryId": {
+						"SourceId": {
 							"value": {
 								"value": "@pipeline().parameters.SourceId",
 								"type": "Expression"
