@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "WriteFullSqlSourcesStarted",
+						"activity": "WriteFullSqlSourceSystemStarted",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -89,7 +89,7 @@
 				}
 			},
 			{
-				"name": "WriteFullSqlSourcesStarted",
+				"name": "WriteFullSqlSourceSystemStarted",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -122,7 +122,7 @@
 								"value": "@pipeline().RunId",
 								"type": "Expression"
 							},
-							"type": "Guid"
+							"type": "Int64"
 						}
 					}
 				},
@@ -132,7 +132,7 @@
 				}
 			},
 			{
-				"name": "WriteFullSqlSourcesEnded",
+				"name": "WriteFullSqlSourceSystemEnded",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -165,7 +165,7 @@
 								"value": "@pipeline().parameters.SourceSystemID",
 								"type": "Expression"
 							},
-							"type": "Int32"
+							"type": "Int64"
 						}
 					}
 				},
