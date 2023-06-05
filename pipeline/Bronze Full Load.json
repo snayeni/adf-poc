@@ -82,7 +82,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{activity(''WriteFullSqlSourceStarted').output.firstRow.TableName}\n\n",
+							"value": "select * from @{activity('WrtiteFullSqlSourceStarted').output.firstRow.TableName}",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -161,7 +161,7 @@
 						},
 						"SourceHistoryId": {
 							"value": {
-								"value": "@activity('WriteFullSqlSourceStarted').output.SourceHistoryId",
+								"value": "@activity('WrtiteFullSqlSourceStarted').output.firstRow.SourceHistoryId",
 								"type": "Expression"
 							},
 							"type": "Int64"
