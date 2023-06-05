@@ -9,7 +9,7 @@
 					{
 						"activity": "WriteFullSqlSourcesStarted",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -54,7 +54,7 @@
 					{
 						"activity": "Read Source Table list",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -101,7 +101,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[status].[WriteSourceSystemStarted]"
+					"storedProcedureName": "[status].[WriteSourceSystemStarted]",
+					"storedProcedureParameters": {
+						"SourceSysId": {
+							"value": {
+								"value": "@pipeline().parameters.SourceSystemID",
+								"type": "Expression"
+							}
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "ETLManagementLinkedService",
@@ -111,14 +119,7 @@
 			{
 				"name": "WriteFullSqlSourcesEnded",
 				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "ForEach1",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
