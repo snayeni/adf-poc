@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup Old watermark",
+				"name": "Lookup1",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -13,36 +13,11 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "SourceId",
-						"value": "1"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[status].[WriteFullSqlStarted]",
-						"storedProcedureParameters": {
-							"FullSqlSourceId": {
-								"type": "Int64",
-								"value": {
-									"value": "@pipeline().parameters.SourceId",
-									"type": "Expression"
-								}
-							},
-							"PipelineRun": {
-								"type": "Datetimeoffset",
-								"value": "@utcnow"
-							},
-							"PipelineId": {
-								"type": "Guid",
-								"value": {
-									"value": "@pipeline().RunId",
-									"type": "Expression"
-								}
-							}
-						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -55,77 +30,6 @@
 						}
 					}
 				}
-			},
-			{
-				"name": "DeltaSqlLoad",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Lookup Old watermark",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "select * from @{activity('Lookup Old watermark').output.firstRow.TableName}",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "ParquetWriteSettings"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ETLManagementDataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"tablename": "a",
-							"schema": "b"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AdlsPocDataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@activity('Lookup Old watermark').output.firstRow.TableName",
-								"type": "Expression"
-							}
-						}
-					}
-				]
 			}
 		],
 		"parameters": {
