@@ -103,9 +103,15 @@
 				"typeProperties": {
 					"storedProcedureName": "[status].[WriteSourceSystemStarted]",
 					"storedProcedureParameters": {
-						"SourceSysId": {
+						"SourceHistoryId": {
 							"value": {
 								"value": "@pipeline().parameters.SourceSystemID",
+								"type": "Expression"
+							}
+						},
+						"PipelineRun": {
+							"value": {
+								"value": "@pipeline().RunId",
 								"type": "Expression"
 							}
 						}
@@ -119,7 +125,14 @@
 			{
 				"name": "WriteFullSqlSourcesEnded",
 				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -129,7 +142,18 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[status].[WriteSourceSystemEnded]"
+					"storedProcedureName": "[status].[WriteSourceSystemEnded]",
+					"storedProcedureParameters": {
+						"PipelineRun": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							}
+						},
+						"SourceHistoryId": {
+							"value": ""
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "ETLManagementLinkedService",
