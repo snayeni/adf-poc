@@ -115,7 +115,7 @@
 								"value": "@utcnow()",
 								"type": "Expression"
 							},
-							"type": "Datetime"
+							"type": "Datetimeoffset"
 						},
 						"PipelineId": {
 							"value": {
